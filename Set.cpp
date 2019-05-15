@@ -28,6 +28,9 @@ void Set::READFILE(const char *filename)
             //создаем новую голову и добавляем в нее
             _head = new node(d);
         }
+        node * temp;
+        node * temp2;
+        node * l_el = _head;
         while (!myReadFile.eof())
         {
             myReadFile >> d;
@@ -35,16 +38,18 @@ void Set::READFILE(const char *filename)
             myReadFile >> k;
             temp = existEl(_head, d);
             temp2 = existEl(_head, k);
-            if(/*temp == nullptr*/)
+            if(temp == nullptr)
             {
-                //temp = add_to_end(_head, d);
+                temp = add_to_end(l_el, d);
+                l_el = l_el -> el;
             }
-            if(/*temp2 == nullptr*/)
+            if(temp2 == nullptr)
             {
-                //temp2 = add_to_end(_head, k);
+                temp2 = add_to_end(l_el, k);
+                l_el = l_el -> el;
             }
-            //temp -> sub_node = add_to_sublist(temp -> sub_node, temp2);
-            //temp2 -> count++;
+            temp -> s_next = add_to_sublist(temp -> s_next, temp2);
+            temp2 -> count++;
         }
         myReadFile.close();
     }
@@ -156,4 +161,28 @@ node * Set::existEl(node * head, unsigned int d) const
         temp = temp -> el;
     }
     return nullptr;
+}
+
+node * Set::add_to_end(node * tail, unsigned  int d)
+{
+    tail -> el = new node(d);
+    return tail -> el;
+}
+
+sub_node * Set::add_to_sublist(sub_node * head, node * el)
+{
+    if(head == nullptr)
+    {
+        head = new sub_node(el, nullptr);
+        return head;
+    }
+    sub_node * temp = head;
+    sub_node * temp2 = head -> s_next;
+    while (temp2 != nullptr)
+    {
+        temp = temp -> s_next;
+        temp2 = temp2 -> s_next;
+    }
+    temp -> s_next = new sub_node(el, nullptr);
+    return head;
 }
