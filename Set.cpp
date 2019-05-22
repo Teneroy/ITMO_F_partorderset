@@ -9,6 +9,14 @@ Set::Set()
     _head = nullptr;
 }
 
+Set::~Set()
+{
+    if(_head != nullptr)
+    {
+        _head = deleteSet(_head);
+    }
+}
+
 void Set::READFILE(const char *filename)
 {
     std::cout << "READ START " << filename << std::endl;
@@ -27,10 +35,13 @@ void Set::READFILE(const char *filename)
         {
             //создаем новую голову и добавляем в нее
             _head = new node(d);
+            add_to_end(_head, k);
+            _head -> s_next = add_to_sublist(_head -> s_next, _head -> el);
+            _head -> el -> count++;
         }
         node * temp;
         node * temp2;
-        node * l_el = _head;
+        node * l_el = _head -> el;
         while (!myReadFile.eof())
         {
             myReadFile >> d;
@@ -111,11 +122,27 @@ bool Set::SORT()
     return true;
 }
 
-Set::~Set()
+void Set::PRINT() const
 {
-    if(_head != nullptr)
+    std::cout << "Print: " << std::endl;
+    if(_head == nullptr)
+        return;
+    node * temp = _head;
+    while (temp != nullptr)
     {
-        _head = deleteSet(_head);
+        std::cout << "data: " << temp -> data << " count: " << temp -> count  << std::endl;
+        if(temp -> s_next != nullptr)
+        {
+            std::cout << "{" << std::endl;
+            sub_node * temp2 = temp -> s_next;
+            while (temp2 != nullptr)
+            {
+                std::cout << "s_data: " << temp2 -> el -> data << std::endl;
+                temp2 = temp2 -> s_next;
+            }
+            std::cout << "}" << std::endl;
+        }
+        temp = temp -> el;
     }
 }
 
